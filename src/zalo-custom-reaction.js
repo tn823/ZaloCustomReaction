@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         ZaloCustomReaction Plus
 // @namespace    local.zalo-custom-reaction
-// @version      2.1.0
+// @version      3.0.0
 // @description  Bảng reaction mở rộng: tìm kiếm, yêu thích, gần đây và giao diện sáng/tối.
 // @match        https://chat.zalo.me/*
 // @grant        none
@@ -22,6 +22,406 @@
     ['Thiên nhiên', 'hoa cây trời nắng mưa nature weather', '🌸 🌺 🌻 🌼 🌷 🪷 🌱 🌲 🌳 🌴 🌵 🌿 ☘️ 🍀 🍁 🍂 🍃 🌍 🌎 🌏 🌕 🌙 ☀️ 🌤️ ⛅ 🌧️ ⛈️ 🌈 ☁️ ❄️ ☃️ 🌊 💧 🫧'],
     ['Hoạt động', 'thể thao game làm việc sport work', '⚽ 🏀 🏈 ⚾ 🎾 🏐 🏓 🏸 🥊 🎮 🕹️ 🎲 🧩 🎨 🎬 🎤 🎧 🎸 🎹 📚 📖 ✏️ 📝 💻 ⌨️ 📱 📷 💰 💸 🛒 🛍️ 🏠 🚗 ✈️ 🛵 🚲 🧳 ⏰ 🛌']
   ].map(([name, keywords, text]) => ({ name, keywords, emojis: text.split(' ') }));
+  // 54 known mappings from zca-js/zcago, plus user-reported :p (unverified type).
+  const zaloReactions = [
+  {
+    "id": "HEART",
+    "code": "/-heart",
+    "type": 5,
+    "emoji": "❤️",
+    "name": "Tim"
+  },
+  {
+    "id": "LIKE",
+    "code": "/-strong",
+    "type": 3,
+    "emoji": "👍",
+    "name": "Thích"
+  },
+  {
+    "id": "HAHA",
+    "code": ":>",
+    "type": 0,
+    "emoji": "😄",
+    "name": "Cười"
+  },
+  {
+    "id": "WOW",
+    "code": ":o",
+    "type": 32,
+    "emoji": "😮",
+    "name": "Ngạc nhiên"
+  },
+  {
+    "id": "CRY",
+    "code": ":-((",
+    "type": 2,
+    "emoji": "😭",
+    "name": "Khóc"
+  },
+  {
+    "id": "ANGRY",
+    "code": ":-h",
+    "type": 20,
+    "emoji": "😠",
+    "name": "Giận"
+  },
+  {
+    "id": "KISS",
+    "code": ":-*",
+    "type": 8,
+    "emoji": "😘",
+    "name": "Hôn"
+  },
+  {
+    "id": "TEARS_OF_JOY",
+    "code": ":')",
+    "type": 7,
+    "emoji": "😂",
+    "name": "Cười ra nước mắt"
+  },
+  {
+    "id": "SHIT",
+    "code": "/-shit",
+    "type": 66,
+    "emoji": "💩",
+    "name": "Phân"
+  },
+  {
+    "id": "ROSE",
+    "code": "/-rose",
+    "type": 120,
+    "emoji": "🌹",
+    "name": "Hoa hồng"
+  },
+  {
+    "id": "BROKEN_HEART",
+    "code": "/-break",
+    "type": 65,
+    "emoji": "💔",
+    "name": "Tan vỡ"
+  },
+  {
+    "id": "DISLIKE",
+    "code": "/-weak",
+    "type": 4,
+    "emoji": "👎",
+    "name": "Không thích"
+  },
+  {
+    "id": "LOVE",
+    "code": ";xx",
+    "type": 29,
+    "emoji": "😍",
+    "name": "Yêu"
+  },
+  {
+    "id": "CONFUSED",
+    "code": ";-/",
+    "type": 51,
+    "emoji": "😕",
+    "name": "Bối rối"
+  },
+  {
+    "id": "WINK",
+    "code": ";-)",
+    "type": 45,
+    "emoji": "😉",
+    "name": "Nháy mắt"
+  },
+  {
+    "id": "FADE",
+    "code": "/-fade",
+    "type": 121,
+    "emoji": "🥀",
+    "name": "Hoa héo"
+  },
+  {
+    "id": "SUN",
+    "code": "/-li",
+    "type": 67,
+    "emoji": "☀️",
+    "name": "Mặt trời"
+  },
+  {
+    "id": "BIRTHDAY",
+    "code": "/-bd",
+    "type": 126,
+    "emoji": "🎂",
+    "name": "Sinh nhật"
+  },
+  {
+    "id": "BOMB",
+    "code": "/-bome",
+    "type": 127,
+    "emoji": "💣",
+    "name": "Bom"
+  },
+  {
+    "id": "OK",
+    "code": "/-ok",
+    "type": 68,
+    "emoji": "👌",
+    "name": "Đồng ý"
+  },
+  {
+    "id": "PEACE",
+    "code": "/-v",
+    "type": 69,
+    "emoji": "✌️",
+    "name": "Chiến thắng"
+  },
+  {
+    "id": "THANKS",
+    "code": "/-thanks",
+    "type": 70,
+    "emoji": "🙏",
+    "name": "Cảm ơn"
+  },
+  {
+    "id": "PUNCH",
+    "code": "/-punch",
+    "type": 71,
+    "emoji": "👊",
+    "name": "Đấm"
+  },
+  {
+    "id": "SHARE",
+    "code": "/-share",
+    "type": 72,
+    "emoji": "🤝",
+    "name": "Chia sẻ"
+  },
+  {
+    "id": "PRAY",
+    "code": "_()_",
+    "type": 73,
+    "emoji": "🙏",
+    "name": "Cầu nguyện"
+  },
+  {
+    "id": "NO",
+    "code": "/-no",
+    "type": 131,
+    "emoji": "🙅",
+    "name": "Không"
+  },
+  {
+    "id": "BAD",
+    "code": "/-bad",
+    "type": 132,
+    "emoji": "👎",
+    "name": "Tệ"
+  },
+  {
+    "id": "LOVE_YOU",
+    "code": "/-loveu",
+    "type": 133,
+    "emoji": "🤟",
+    "name": "Yêu bạn"
+  },
+  {
+    "id": "SAD",
+    "code": "--b",
+    "type": 1,
+    "emoji": "😞",
+    "name": "Buồn"
+  },
+  {
+    "id": "VERY_SAD",
+    "code": ":((",
+    "type": 16,
+    "emoji": "😢",
+    "name": "Rất buồn"
+  },
+  {
+    "id": "COOL",
+    "code": "x-)",
+    "type": 21,
+    "emoji": "😎",
+    "name": "Ngầu"
+  },
+  {
+    "id": "NERD",
+    "code": "8-)",
+    "type": 22,
+    "emoji": "🤓",
+    "name": "Mọt sách"
+  },
+  {
+    "id": "BIG_SMILE",
+    "code": ";-d",
+    "type": 23,
+    "emoji": "😁",
+    "name": "Cười tươi"
+  },
+  {
+    "id": "SUNGLASSES",
+    "code": "b-)",
+    "type": 26,
+    "emoji": "🕶️",
+    "name": "Kính mát"
+  },
+  {
+    "id": "NEUTRAL",
+    "code": ":--|",
+    "type": 30,
+    "emoji": "😐",
+    "name": "Bình thường"
+  },
+  {
+    "id": "SAD_FACE",
+    "code": "p-(",
+    "type": 35,
+    "emoji": "😔",
+    "name": "Thất vọng"
+  },
+  {
+    "id": "BYE",
+    "code": ":-bye",
+    "type": 36,
+    "emoji": "👋",
+    "name": "Tạm biệt"
+  },
+  {
+    "id": "SLEEPY",
+    "code": "|-)",
+    "type": 38,
+    "emoji": "😴",
+    "name": "Buồn ngủ"
+  },
+  {
+    "id": "WIPE",
+    "code": ":wipe",
+    "type": 39,
+    "emoji": "😓",
+    "name": "Lau mồ hôi"
+  },
+  {
+    "id": "DIG",
+    "code": ":-dig",
+    "type": 42,
+    "emoji": "🤔",
+    "name": "Suy nghĩ"
+  },
+  {
+    "id": "ANGUISH",
+    "code": "&-(",
+    "type": 44,
+    "emoji": "😖",
+    "name": "Đau khổ"
+  },
+  {
+    "id": "HANDCLAP",
+    "code": ":handclap",
+    "type": 46,
+    "emoji": "👏",
+    "name": "Vỗ tay"
+  },
+  {
+    "id": "ANGRY_FACE",
+    "code": ">-|",
+    "type": 47,
+    "emoji": "😡",
+    "name": "Tức giận"
+  },
+  {
+    "id": "F_CHAIR",
+    "code": ":-f",
+    "type": 48,
+    "emoji": "🪑",
+    "name": "Ghế trước"
+  },
+  {
+    "id": "L_CHAIR",
+    "code": ":-l",
+    "type": 49,
+    "emoji": "🪑",
+    "name": "Ghế trái"
+  },
+  {
+    "id": "R_CHAIR",
+    "code": ":-r",
+    "type": 50,
+    "emoji": "🪑",
+    "name": "Ghế phải"
+  },
+  {
+    "id": "SILENT",
+    "code": ";-x",
+    "type": 52,
+    "emoji": "🤐",
+    "name": "Im lặng"
+  },
+  {
+    "id": "SURPRISE",
+    "code": ":-o",
+    "type": 53,
+    "emoji": "😲",
+    "name": "Bất ngờ"
+  },
+  {
+    "id": "EMBARRASSED",
+    "code": ";-s",
+    "type": 54,
+    "emoji": "😳",
+    "name": "Ngượng"
+  },
+  {
+    "id": "AFRAID",
+    "code": ";-a",
+    "type": 60,
+    "emoji": "😨",
+    "name": "Sợ"
+  },
+  {
+    "id": "SAD2",
+    "code": ":-<",
+    "type": 61,
+    "emoji": "🙁",
+    "name": "Buồn bã"
+  },
+  {
+    "id": "BIG_LAUGH",
+    "code": ":))",
+    "type": 62,
+    "emoji": "🤣",
+    "name": "Cười lớn"
+  },
+  {
+    "id": "RICH",
+    "code": "$-)",
+    "type": 63,
+    "emoji": "🤑",
+    "name": "Giàu"
+  },
+  {
+    "id": "BEER",
+    "code": "/-beer",
+    "type": 99,
+    "emoji": "🍺",
+    "name": "Bia"
+  },
+  {
+    "id": "TONGUE",
+    "code": ":p",
+    "type": -1,
+    "emoji": "😛",
+    "name": "Lè lưỡi (thử nghiệm)"
+  }
+];
+  const nativeByCode = new Map(zaloReactions.map(item => [item.code, item]));
+  const payloadFor = text => {
+    const native = nativeByCode.get(text);
+    return native ? { rType: native.type, rIcon: native.code, source: 6 } : { rType: text === '👏' ? 100 : text === '🎉' ? 101 : hash(text), rIcon: text };
+  };
+  const popupPosition = (anchor, width, height, vw, vh) => {
+    const gap = 8, margin = 8;
+    const left = Math.max(margin, Math.min(anchor.right - width, vw - width - margin));
+    const above = anchor.top - height - gap;
+    const top = above >= margin ? above : Math.max(margin, Math.min(anchor.bottom + gap, vh - height - margin));
+    return { left, top };
+  };
   const hash = text => { let h = 0; for (let i = 0; i < text.length; i++) h = ((h << 5) - h + text.charCodeAt(i)) | 0; return Math.abs(h); };
   const normalize = text => text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/đ/g, 'd');
   const findSender = element => {
@@ -39,7 +439,7 @@
     }
     return null;
   };
-  if (typeof module !== 'undefined' && module.exports) { module.exports = { hash, normalize, findSender, groups }; return; }
+  if (typeof module !== 'undefined' && module.exports) { module.exports = { hash, normalize, findSender, groups, zaloReactions, payloadFor, popupPosition }; return; }
   if (document.getElementById('zcr-root')) return;
   const storageKey = 'zcr-plus-v2';
   let state = { favorites: ['❤️', '👏', '🎉', '🔥', '💯', '🫶'], recent: [] };
@@ -79,18 +479,88 @@
     .send{border-radius:5px;padding:6px 12px;background:#397cd2;font-size:12px}
     .status{font-size:11px;color:#a8b1bd;min-height:0;margin-top:6px}footer>p{font-size:10px;color:#98a5b5}
     @media(prefers-reduced-motion:reduce){.emoji{transition:none}.emoji:hover{transform:none}}
-  </style><div class="veil" hidden><section class="panel" role="dialog" aria-modal="true" aria-labelledby="title"><header><div class="top"><div><h2 id="title">Reaction</h2><p>ZaloCustomReaction · ${groups.reduce((n,g)=>n+g.emojis.length,0)} emoji có sẵn</p></div><button class="close" aria-label="Đóng">×</button></div><input class="search" aria-label="Tìm emoji" placeholder="Tìm: tim, vui, mèo, coffee hoặc emoji…"></header><div class="tabs" role="tablist" aria-label="Nhóm emoji"></div><div class="grid" aria-label="Emoji"></div><footer><div class="custom"><input maxlength="64" aria-label="Reaction tùy chỉnh" placeholder="Emoji hoặc nội dung riêng…"><button class="send">Gửi</button></div><div class="status" role="status" aria-live="polite"></div><p>Chọn để gửi · Shift + nhấp để lưu yêu thích</p></footer></section></div>`;
+    .veil{background:transparent;display:block;pointer-events:none}
+    .panel{position:fixed;pointer-events:auto;width:min(426px,calc(100vw - 16px));max-height:calc(100dvh - 16px)}
+    .mode-tabs{display:flex;align-items:stretch;flex:1;height:100%;gap:0}
+    .mode{flex:1;border:0;border-bottom:2px solid transparent;background:none;color:#b1bac6;font-size:14px;font-weight:650}
+    .mode[aria-selected=true]{color:#64a6ff;border-bottom-color:#64a6ff}
+    .top{height:58px}.close{width:28px;height:28px;font-size:20px}
+    .native-code{display:block;font:9px/12px system-ui;color:#aab4c0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+    .native{font-size:27px;min-height:48px;line-height:30px;padding:2px}
+    .native img,.native-art{display:inline-block;width:30px;height:30px;object-fit:contain;vertical-align:middle}
+    .sync{color:#64a6ff;border:0;background:transparent;font-size:11px;cursor:pointer;padding:4px}
+  </style><div class="veil" hidden><section class="panel" role="dialog" aria-modal="true" aria-label="Chọn reaction"><header><div class="top"><div class="mode-tabs" role="tablist" aria-label="Bộ reaction"><button class="mode" data-mode="zalo" role="tab" aria-selected="true">ZALO</button><button class="mode" data-mode="unicode" role="tab" aria-selected="false">EMOJI</button></div><button class="close" aria-label="Đóng">×</button></div><input class="search" aria-label="Tìm emoji" placeholder="Tìm: tim, vui, mèo, coffee hoặc emoji…"></header><div class="tabs" role="tablist" aria-label="Nhóm emoji"></div><div class="grid" aria-label="Emoji"></div><footer><div class="custom"><input maxlength="64" aria-label="Reaction tùy chỉnh" placeholder="Emoji hoặc nội dung riêng…"><button class="send">Gửi</button></div><button class="sync" type="button">Đồng bộ hình Zalo đang mở</button><div class="status" role="status" aria-live="polite"></div><p>Chọn để gửi · Shift + nhấp để lưu yêu thích</p></footer></section></div>`;
   const $ = selector => shadow.querySelector(selector);
   const veil = $('.veil'), grid = $('.grid'), tabs = $('.tabs'), search = $('.search'), custom = $('.custom input'), status = $('.status');
+  let mode = 'zalo';
+  const nativeArt = new Map();
   let active = 'Cảm xúc', context = null, previousFocus = null, sending = false;
   const names = ['Tất cả', '⭐ Yêu thích', '🕘 Gần đây', ...groups.map(g => g.name)];
   const categoryIcons = ['≡', '☆', '◷', '☺', '☞', '♡', '✧', '♞', '☕', '❀', '⚽'];
+  function readNativeArt() {
+    // Explicit, bounded scan only when opening or synchronizing; no network requests.
+    let count = 0;
+    for (const node of document.querySelectorAll('img[alt],img[title],[data-code],[data-emoji]')) {
+      if (++count > 4000) break;
+      const codes = ['alt','title','data-code','data-emoji'].map(key => node.getAttribute(key)?.trim());
+      const code = codes.find(value => nativeByCode.has(value));
+      if (!code) continue;
+      const image = node.tagName === 'IMG' ? node : node.querySelector('img');
+      if (image) {
+        const src = image.currentSrc || image.src;
+        try { const url = new URL(src, location.href); if (['https:','http:','blob:'].includes(url.protocol)) nativeArt.set(code, src); } catch {}
+      }
+    }
+  }
+  function nativeButton(item) {
+    const button = document.createElement('button'); button.className = 'emoji native';
+    button.title = item.name + ' · ' + item.code; button.setAttribute('aria-label', 'Gửi ' + item.name + ' ' + item.code);
+    const art = nativeArt.get(item.code);
+    if (art) { const img = document.createElement('img'); img.src = art; img.alt = item.name; img.onerror = () => img.replaceWith(document.createTextNode(item.emoji)); button.append(img); }
+    else button.append(document.createTextNode(item.emoji));
+    const code = document.createElement('span'); code.className = 'native-code'; code.textContent = item.code; button.append(code);
+    button.onclick = e => {
+      if (e.shiftKey) { state.favorites = state.favorites.includes(item.code) ? state.favorites.filter(x => x !== item.code) : [item.code,...state.favorites].slice(0,48); save(); render(); }
+      else send(item.code);
+    };
+    return button;
+  }
+  function position() {
+    if (veil.hidden) return;
+    const panel = $('.panel');
+    const rect = context?.anchor?.isConnected ? context.anchor.getBoundingClientRect() : context?.rect || launcher.getBoundingClientRect();
+    const point = popupPosition(rect, panel.offsetWidth, panel.offsetHeight, innerWidth, innerHeight);
+    panel.style.left = point.left + 'px'; panel.style.top = point.top + 'px';
+  }
+  function renderNative() {
+    const q = normalize(search.value.trim());
+    const matches = item => !q || normalize(item.name + ' ' + item.code + ' ' + item.id).includes(q);
+    const items = active === '⭐ Yêu thích' ? state.favorites.map(code => nativeByCode.get(code)).filter(Boolean) : active === '🕘 Gần đây' ? state.recent.map(code => nativeByCode.get(code)).filter(Boolean) : zaloReactions;
+    grid.replaceChildren(...items.filter(matches).map(nativeButton));
+    if (!grid.childNodes.length) { const p = document.createElement('p'); p.className = 'empty'; p.textContent = 'Chưa có reaction phù hợp.'; grid.append(p); }
+    if (!q && !['⭐ Yêu thích','🕘 Gần đây'].includes(active)) {
+      const heading = document.createElement('div'); heading.className = 'group-title'; heading.textContent = 'Zalo · ' + zaloReactions.length + ' mã'; grid.prepend(heading);
+      const recent = state.recent.map(code => nativeByCode.get(code)).filter(Boolean).slice(0,8);
+      if (recent.length) { const label = document.createElement('div'); label.className = 'group-title'; label.textContent = 'Recent'; grid.prepend(label, ...recent.map(nativeButton)); }
+    }
+    position();
+  }
   function render() {
+    shadow.querySelectorAll('.mode').forEach(b => b.setAttribute('aria-selected', String(b.dataset.mode === mode)));
+    $('.sync').hidden = mode !== 'zalo';
+    if (mode === 'zalo') {
+      tabs.replaceChildren(...['Tất cả','⭐ Yêu thích','🕘 Gần đây'].map((name,i) => {
+        const b = document.createElement('button'); b.className = 'tab'; b.textContent = ['Z','☆','◷'][i]; b.title = name; b.setAttribute('aria-label',name); b.setAttribute('role','tab'); b.setAttribute('aria-selected',String(active === name)); b.onclick = () => { active = name; render(); }; return b;
+      }));
+      renderNative(); return;
+    }
+
     tabs.replaceChildren(...names.map((name, index) => {
       const b = document.createElement('button'); b.className = 'tab'; b.textContent = categoryIcons[index]; b.title = name; b.setAttribute('aria-label', name); b.setAttribute('role', 'tab'); b.setAttribute('aria-selected', String(active === name));
       b.onclick = () => { active = name; render(); }; return b;
     }));
     let emojis = active === names[1] ? state.favorites : active === names[2] ? state.recent : groups.filter(g => active === 'Tất cả' || g.name === active).flatMap(g => g.emojis);
+    emojis = emojis.filter(e => !nativeByCode.has(e));
     const q = normalize(search.value.trim());
     if (q) emojis = emojis.filter(e => e.includes(search.value.trim()) || groups.some(g => g.emojis.includes(e) && normalize(g.name + ' ' + g.keywords).includes(q)));
     grid.replaceChildren(...[...new Set(emojis)].map(emoji => {
@@ -105,19 +575,22 @@
       const heading = document.createElement('div'); heading.className = 'group-title'; heading.textContent = 'Emoji'; grid.prepend(heading);
       if (state.recent.length) {
         const recentHeading = document.createElement('div'); recentHeading.className = 'group-title'; recentHeading.textContent = 'Gần đây';
-        const buttons = state.recent.slice(0, 8).map(emoji => {
+        const buttons = state.recent.filter(e => !nativeByCode.has(e)).slice(0, 8).map(emoji => {
           const b = document.createElement('button'); b.className = 'emoji'; b.textContent = emoji; b.title = emoji; b.setAttribute('aria-label', `Gửi ${emoji}`); b.onclick = () => send(emoji); return b;
         });
         grid.prepend(recentHeading, ...buttons);
       }
     }
   }
+  shadow.querySelectorAll('.mode').forEach(b => { b.onclick = () => { mode = b.dataset.mode; active = mode === 'zalo' ? 'Tất cả' : 'Cảm xúc'; search.value = ''; render(); position(); }; });
+  $('.sync').onclick = () => { readNativeArt(); render(); status.textContent = 'Đã nhận ' + nativeArt.size + ' hình. Mở bảng emoji gốc của Zalo rồi bấm đồng bộ để lấy thêm.'; position(); };
   function close() { veil.hidden = true; context = null; if (previousFocus?.isConnected) previousFocus.focus(); }
   function open(anchor, preview = false) {
-    context = { anchor, sender: preview ? null : findSender(anchor), preview };
-    previousFocus = document.activeElement; search.value = ''; custom.value = ''; active = 'Cảm xúc';
+    context = { anchor, rect: anchor?.getBoundingClientRect(), sender: preview ? null : findSender(anchor), preview };
+    previousFocus = document.activeElement; search.value = ''; custom.value = ''; active = mode === 'zalo' ? 'Tất cả' : 'Cảm xúc';
+    readNativeArt();
     status.textContent = preview ? 'Chế độ xem thử — không gửi reaction.' : context.sender ? 'Sẵn sàng · mỗi lần chọn gửi một reaction.' : 'Chưa tìm thấy hàm gửi. Đóng và mở lại menu reaction của tin nhắn.';
-    veil.hidden = false; render(); search.focus();
+    veil.hidden = false; render(); position(); search.focus();
   }
   async function send(value) {
     const text = value.trim(); if (!text || sending || !context) return;
@@ -125,12 +598,16 @@
     if (!context.sender) { status.textContent = 'Không thể gửi: Zalo có thể đã đổi giao diện. Hãy mở lại menu reaction.'; return; }
     sending = true; $('.send').disabled = true;
     try {
-      await context.sender({ rType: text === '👏' ? 100 : text === '🎉' ? 101 : hash(text), rIcon: text });
+      const target = context;
+      await target.sender(payloadFor(text));
       state.recent = [text, ...state.recent.filter(x => x !== text)].slice(0,32); save();
-      status.textContent = 'Đã chuyển reaction cho Zalo; kiểm tra kết quả trên tin nhắn.';
+      if (context === target) close();
     } catch (error) { status.textContent = `Không gửi được: ${error?.message || 'Lỗi không xác định'}`; }
     finally { sending = false; $('.send').disabled = false; }
   }
+  document.addEventListener('pointerdown', e => { if (!veil.hidden && !e.composedPath().includes(host)) close(); }, true);
+  window.addEventListener('resize', close);
+  document.addEventListener('scroll', e => { if (!veil.hidden && !e.composedPath().includes(host)) close(); }, true);
   $('.close').onclick = close; veil.onclick = e => { if (e.target === veil) close(); };
   let searchTimer;
   search.oninput = () => { clearTimeout(searchTimer); searchTimer = setTimeout(render, 100); }; $('.send').onclick = () => send(custom.value);

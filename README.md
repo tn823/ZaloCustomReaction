@@ -1,5 +1,16 @@
 # ZaloCustomReaction Plus
 
+## Bản hiện tại: 3.0.0
+
+- Tab **ZALO** riêng: 54 mã có bảng ánh xạ `rType`, thêm `:p` do người dùng ghi nhận (type chưa xác minh, dùng `-1`). Gửi nguyên mã trong `rIcon`, không thay bằng Unicode.
+- Tab **EMOJI** giữ bộ Unicode cũ. Có tìm kiếm, yêu thích và gần đây cho từng bộ.
+- Popup neo cạnh menu reaction, ưu tiên phía trên, giới hạn trong màn hình. Bấm ngoài, Escape, cuộn trang hoặc đổi kích thước sẽ đóng; chọn reaction thành công ở callback cũng đóng. Lỗi callback giữ bảng để xem lỗi. Không tự gửi tin nhắn chat.
+- Nút **Đồng bộ hình Zalo đang mở** lấy ảnh emoji có mã tương ứng từ DOM trang hiện tại; không tải bộ ảnh ngoài. Hãy mở bảng emoji gốc của Zalo trước rồi mở script và đồng bộ. Chỉ lấy được khi ảnh có thuộc tính mã nhận diện phù hợp. Chưa hỗ trợ ảnh sprite/canvas hoặc mã ẩn trong state của ứng dụng.
+- Khi chưa lấy được ảnh gốc, ô hiển thị Unicode minh họa và mã Zalo bên dưới; không phải hình gốc của Zalo. Không khẳng định giống hoàn toàn popup Zalo hoặc đã thu thập đủ toàn bộ mã.
+- Danh sách mã: xem `REACTIONS.md`. Nguồn đối chiếu: https://github.com/RFS-ADRENO/zca-js/blob/main/src/models/Reaction.ts và https://github.com/RFS-ADRENO/zca-js/blob/main/src/apis/addReaction.ts; bảng cục bộ trong zcago. Chưa kiểm thử máy chủ thật cho toàn bộ mã.
+
+Kiểm thử phát triển: chạy `npm ci` trước `npm test` (happy-dom chỉ phục vụ tests; userscript vẫn không cần thư viện hoặc CDN). Các tests DOM kiểm tra mở bảng, chuyển tab, payload và đóng popup; không thay thế kiểm tra hình ảnh trên Zalo thật.
+
 ## Bản 2.1.0 — giao diện tối
 
 Bảng chọn nền tối, lưới 8 cột, mục gần đây và thanh nhóm bằng biểu tượng bên dưới theo ảnh tham khảo. Emoji hiện tại vẫn là Unicode, chưa tích hợp bộ ảnh emoji riêng của Zalo. Không có tab Sticker vì script chưa hỗ trợ gửi sticker như reaction. Cần kiểm tra asset và payload Zalo trước khi bổ sung bộ riêng; ảnh chụp không cung cấp các dữ liệu đó.
