@@ -1,5 +1,9 @@
 # ZaloCustomReaction Plus
 
+## Bản 2.1.0 — giao diện tối
+
+Bảng chọn nền tối, lưới 8 cột, mục gần đây và thanh nhóm bằng biểu tượng bên dưới theo ảnh tham khảo. Emoji hiện tại vẫn là Unicode, chưa tích hợp bộ ảnh emoji riêng của Zalo. Không có tab Sticker vì script chưa hỗ trợ gửi sticker như reaction. Cần kiểm tra asset và payload Zalo trước khi bổ sung bộ riêng; ảnh chụp không cung cấp các dữ liệu đó.
+
 Userscript 2.0.0 cho Zalo Web, phát triển từ ý tưởng và cơ chế `sendReaction` trong Zalo Custom Reaction 1.4.1 của Anh Duc Le (ducladev).
 
 ## Cài thử
